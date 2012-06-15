@@ -8,7 +8,8 @@ Pod::Spec.new do |s|
   s.authors   = {
     'Taras Kalapun' => 'http://kalapun.com'
   }
+  s.dependency 'Injective'
   s.source   = { :git => 'git://github.com/xslim/TKThemeManager.git' }
   s.source_files = '*.{h,m}'
-  s.clean_paths  = 'theme.plist'
+  s.requires_arc = true
 end
