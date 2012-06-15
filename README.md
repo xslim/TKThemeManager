@@ -7,7 +7,7 @@ CComponent is dependent from [Injective](https://github.com/farcaller/Injective)
 ## Installation
 * You need [cocoapods](http://cocoapods.org) lib manager
 * Edit your `Podfile` and add
-``` ruby
+``` rb
 dependency 'TKThemeManager', :podspec => 'https://raw.github.com/xslim/TKThemeManager/master/TKThemeManager.podspec'
 ```
 
