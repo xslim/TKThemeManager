@@ -4,6 +4,13 @@ TKThemeManager
 iOS Lib to style components from plist
 CComponent is dependent from [Injective](https://github.com/farcaller/Injective) lib
 
+## Installation
+* You need [cocoapods](http://cocoapods.org) lib manager
+* Edit your `Podfile` and add
+``` ruby
+dependency 'TKThemeManager', :podspec => 'https://raw.github.com/xslim/TKThemeManager/master/TKThemeManager.podspec'
+```
+
 ## Usage
 * Edit your `-Prefix.pch` file and add
 
