@@ -25,6 +25,7 @@ dependency 'TKThemeManager', :podspec => 'https://raw.github.com/xslim/TKThemeMa
 ```
 
 * In `AppDelegate.m`
+
 ```obj-c
 // Set-up Injective
 [IJContext setDefaultContext:[[IJContext alloc] init]];
@@ -34,6 +35,7 @@ dependency 'TKThemeManager', :podspec => 'https://raw.github.com/xslim/TKThemeMa
 ```
 
 * Use in you classes
+
 ```obj-c
 
 CGPoint padPoint = themedPoint(@"epg.cell.title.point");
