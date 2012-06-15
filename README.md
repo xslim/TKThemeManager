@@ -53,6 +53,6 @@ label.backgroundColor = [UIColor themedFor:@"epg.timeline.time.bg_color"];
 * Colors: in HEX format, like `ffffff`
 * Fonts: `:12` for standart font, `b:12` for bold, `CustomFontName:12` for custom font
 * CGPoint: `{3,9}`
-* CGRect: `{3,9},3,9}}`
+* CGRect: `{{3,9},{3,9}}`
 * float: 34.15
 
