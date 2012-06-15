@@ -13,6 +13,7 @@ dependency 'TKThemeManager', :podspec => 'https://raw.github.com/xslim/TKThemeMa
 ```
 
 ## Usage
+* Setup the theme info in `theme.plist`, look for sample here
 * Edit your `-Prefix.pch` file and add
 
 ```obj-c
@@ -47,4 +48,11 @@ label.backgroundColor = [UIColor themedFor:@"epg.timeline.time.bg_color"];
 ``` 
 
 * Available defines: `themedValue`, `themedInt`, `themedFloat`, `themedRect`, `themedPoint`
+
+## Theme plist 
+* Colors: in HEX format, like `ffffff`
+* Fonts: `:12` for standart font, `b:12` for bold, `CustomFontName:12` for custom font
+* CGPoint: `{3,9}`
+* CGRect: `{3,9},3,9}}`
+* float: 34.15
 
