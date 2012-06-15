@@ -7,14 +7,15 @@ CComponent is dependent from [Injective](https://github.com/farcaller/Injective)
 ## Installation
 * You need [cocoapods](http://cocoapods.org) lib manager
 * Edit your `Podfile` and add
-``` rb
+
+```ruby
 dependency 'TKThemeManager', :podspec => 'https://raw.github.com/xslim/TKThemeManager/master/TKThemeManager.podspec'
 ```
 
 ## Usage
 * Edit your `-Prefix.pch` file and add
 
-``` obj-c
+```obj-c
 #ifdef __OBJC__
     // def imports...
     /// Theaming
@@ -24,7 +25,7 @@ dependency 'TKThemeManager', :podspec => 'https://raw.github.com/xslim/TKThemeMa
 ```
 
 * In `AppDelegate.m`
-``` obj-c
+```obj-c
 // Set-up Injective
 [IJContext setDefaultContext:[[IJContext alloc] init]];
 
@@ -33,7 +34,7 @@ dependency 'TKThemeManager', :podspec => 'https://raw.github.com/xslim/TKThemeMa
 ```
 
 * Use in you classes
-``` obj-c
+```obj-c
 
 CGPoint padPoint = themedPoint(@"epg.cell.title.point");
 
