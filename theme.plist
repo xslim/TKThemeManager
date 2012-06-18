@@ -177,5 +177,31 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>layout</key>
+	<dict>
+		<key>tabBar</key>
+		<array>
+			<dict>
+				<key>controller</key>
+				<string>EventsEPGViewController</string>
+				<key>inNavigationController</key>
+				<true/>
+				<key>navBarStyle</key>
+				<integer>1</integer>
+				<key>title</key>
+				<string>EPG</string>
+			</dict>
+			<dict>
+				<key>controller</key>
+				<string>GenresViewController</string>
+				<key>inNavigationController</key>
+				<true/>
+				<key>navBarStyle</key>
+				<integer>1</integer>
+				<key>title</key>
+				<string>Genres</string>
+			</dict>
+		</array>
+	</dict>
 </dict>
 </plist>

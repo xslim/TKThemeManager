@@ -20,6 +20,8 @@
 
 - (id)themedValueForPath:(NSString *)themePath;
 
+// Layout
+- (UIViewController *)rootViewControllerFromLayout;
 
 @end
 
