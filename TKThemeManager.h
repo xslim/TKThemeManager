@@ -11,6 +11,7 @@
 #define themedFloat(__path__) [themedValue(__path__) floatValue]
 #define themedRect(__path__) CGRectFromString(themedValue(__path__))
 #define themedPoint(__path__) CGPointFromString(themedValue(__path__))
+#define themedSize(__path__) CGSizeFromString(themedValue(__path__))
 
 @interface TKThemeManager : NSObject
 
