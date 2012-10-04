@@ -34,46 +34,61 @@ injective_register_singleton(TKThemeManager)
 
 - (UIViewController *)rootViewControllerFromLayout
 {
-    NSDictionary *layout = [self themedValueForPath:@"layout"];
-    if (!layout) return nil;
+    return [self viewControllerFromPropertyDictionary:[self themedValueForPath:@"layout"]];
+}
+
+- (UIViewController *)viewControllerFromPropertyDictionary:(NSDictionary *)propertyDict {
+    if (!propertyDict) return nil;
+    NSAssert([propertyDict isKindOfClass:[NSDictionary class]], @"Expected a dictionary where a %@ was found", NSStringFromClass([propertyDict class]));
     
-    // TODO: add try-catch ?
+    UIViewController *controller = nil;
+    NSString *controllerName = [propertyDict objectForKey:@"controller"];
+    NSAssert([controllerName isKindOfClass:[NSString class]], @"The controller name should be a string");
     
-    if ([[layout objectForKey:@"tabBar"] isKindOfClass:[NSArray class]]) {
-        
-        UITabBarController *tabBarController = [[UITabBarController alloc] init];
-        NSMutableArray *vcs = [[NSMutableArray alloc] init];
-        
-        for (NSDictionary *tab in [layout objectForKey:@"tabBar"]) {
-            NSString *controller = [tab objectForKey:@"controller"];
-            UIViewController *vc = [[NSClassFromString(controller) alloc] init];
-            
-            NSString *title = [tab objectForKey:@"title"];
-            if (title) {
-                vc.title = NSLocalizedString(title, nil);
-            }
-            
-            // TODO: Add more if checking
-            BOOL inNavigationController = [[tab objectForKey:@"inNavigationController"] boolValue];
-            if (inNavigationController) {
-                UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
-                
-                int barStyle = [[tab objectForKey:@"navBarStyle"] intValue];
-                nc.navigationBar.barStyle = barStyle;
-                
-                [vcs addObject:nc];
-            } else {
-                [vcs addObject:vc];
-            }
-            
-        }
-        
-        tabBarController.viewControllers = vcs;
-        
-        return tabBarController;
+    //Instantiate
+    NSString *nibName = [propertyDict objectForKey:@"nibName"];
+    NSBundle *nibBundle = [NSBundle bundleWithPath:[propertyDict objectForKey:@"nibBundle"]];
+    if (nibName) {        
+        controller = [[NSClassFromString(controllerName) alloc] initWithNibName:nibName bundle:nibBundle];
+    }
+    else {
+        controller = [[NSClassFromString(controllerName) alloc] init];
     }
     
-    return nil;
+    NSAssert(controller != nil, @"The controller named %@ can not be created", controllerName);
+    NSAssert([controller isKindOfClass:[UIViewController class]], @"The controller %@ should be kind of UIViewController", controllerName);
+
+    //Properties
+    NSString *title = [propertyDict objectForKey:@"title"];
+    if (title) {
+        controller.title = NSLocalizedString(title, nil);
+    }    
+    
+    //Subcontrollers
+    NSArray *subControllers = [propertyDict objectForKey:@"subControllers"];
+    if (([controller respondsToSelector:@selector(setViewControllers:)]) && subControllers) {
+        NSAssert([subControllers isKindOfClass:[NSArray class]], @"Subcontrollers should be an array");
+        
+        NSMutableArray *vcs = [NSMutableArray arrayWithCapacity:subControllers.count];
+        for (NSDictionary *subController in subControllers) {
+            UIViewController *vc = [self viewControllerFromPropertyDictionary:subController];
+            if (vc) {
+                [vcs addObject:vc];
+            }
+        }
+        [controller performSelector:@selector(setViewControllers:) withObject:vcs];
+    }
+        
+    //Navigation bar
+    BOOL inNavigationController = [[propertyDict objectForKey:@"inNavigationController"] boolValue];
+    if (inNavigationController) {
+        UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:controller];
+        int barStyle = [[propertyDict objectForKey:@"navBarStyle"] intValue];
+        nc.navigationBar.barStyle = barStyle;
+        controller = nc;
+    }
+    
+    return controller;
 }
 
 @end
