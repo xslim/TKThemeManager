@@ -13,6 +13,9 @@ blue:((float)(rgbValue & 0xFF)) / 255.0 \
 alpha:alphaValue])
 #define UIColorFromRGB(rgbValue) (UIColorFromRGBA((rgbValue), 1.0))
 
+#define IPAD ((__IPHONE_OS_VERSION_MAX_ALLOWED >= 30200) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad))
+#define IPHONE (!IPAD)
+
 // TODO: static keys
 
 @implementation TKThemeManager
@@ -42,7 +45,18 @@ injective_register_singleton(TKThemeManager)
     NSAssert([propertyDict isKindOfClass:[NSDictionary class]], @"Expected a dictionary where a %@ was found", NSStringFromClass([propertyDict class]));
     
     UIViewController *controller = nil;
+    
     NSString *controllerName = [propertyDict objectForKey:@"controller"];
+    
+    // Check for iPad & iPhone controllers
+    if (IPAD) {
+        NSString *controllerNameIPad = [propertyDict objectForKey:@"controller~iPad"];
+        if (controllerNameIPad) controllerName = controllerNameIPad;
+    } else {
+        NSString *controllerNameIPhone = [propertyDict objectForKey:@"controller~iPhone"];
+        if (controllerNameIPhone) controllerName = controllerNameIPhone;
+    }
+    
     NSAssert([controllerName isKindOfClass:[NSString class]], @"The controller name should be a string");
     
     //Instantiate
