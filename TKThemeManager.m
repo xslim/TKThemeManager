@@ -169,8 +169,7 @@ injective_register_singleton(TKThemeManager)
 
 + (UIColor *)themedFor:(NSString *)themePath {
     
-    NSString *hexString = themedValue(themePath);
-    
+    NSString *hexString = [themedValue(themePath) stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     if (!hexString) {
         NSLog(@"[TKThemeManager] No Color for %@", themePath);
         return nil;
@@ -181,9 +180,13 @@ injective_register_singleton(TKThemeManager)
     BOOL success = [scanner scanHexInt:&hex];
     
     if (!success) return nil;
-    
-    UIColor *color = UIColorFromRGB(hex);
-    return color;
+    if ([hexString length] <= 6)
+        return UIColorFromRGB(hex);
+    else {
+        unsigned color = (hex & 0xFFFFFF00) >> 8;
+        CGFloat alpha = 1.0 * (hex & 0xFF) / 255.0;
+        return UIColorFromRGBA(color, alpha);
+    }
 }
 
 @end
