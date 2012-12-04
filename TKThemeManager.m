@@ -26,6 +26,12 @@ injective_register_singleton(TKThemeManager)
 
 - (id)themedValueForPath:(NSString *)themePath
 {
+    //Check the value for the specific device
+    NSString *themePathDevice = [themePath stringByAppendingString:(IPAD? @"~iPad" : @"~iPhone")];
+    id deviceValue = [self.themeOptions valueForKeyPath:themePathDevice];
+    if (deviceValue) {
+        return deviceValue;
+    }
     return [self.themeOptions valueForKeyPath:themePath];
 }
 
