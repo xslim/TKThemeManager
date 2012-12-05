@@ -16,6 +16,14 @@ alpha:alphaValue])
 #define IPAD ((__IPHONE_OS_VERSION_MAX_ALLOWED >= 30200) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad))
 #define IPHONE (!IPAD)
 
+
+@interface NSDictionary (TKThemed)
+
+- (id)TKObjectForKey:(id)aKey;
+- (id)TKValueForKeyPath:(NSString *)keyPath;
+
+@end
+
 // TODO: static keys
 
 @implementation TKThemeManager
@@ -26,13 +34,7 @@ injective_register_singleton(TKThemeManager)
 
 - (id)themedValueForPath:(NSString *)themePath
 {
-    //Check the value for the specific device
-    NSString *themePathDevice = [themePath stringByAppendingString:(IPAD? @"~iPad" : @"~iPhone")];
-    id deviceValue = [self.themeOptions valueForKeyPath:themePathDevice];
-    if (deviceValue) {
-        return deviceValue;
-    }
-    return [self.themeOptions valueForKeyPath:themePath];
+    return [self.themeOptions TKValueForKeyPath:themePath];
 }
 
 - (void)loadFromBundleWithFileName:(NSString *)fileName
@@ -52,23 +54,13 @@ injective_register_singleton(TKThemeManager)
     
     UIViewController *controller = nil;
     
-    NSString *controllerName = [propertyDict objectForKey:@"controller"];
-    
-    // Check for iPad & iPhone controllers
-    if (IPAD) {
-        NSString *controllerNameIPad = [propertyDict objectForKey:@"controller~iPad"];
-        if (controllerNameIPad) controllerName = controllerNameIPad;
-    } else {
-        NSString *controllerNameIPhone = [propertyDict objectForKey:@"controller~iPhone"];
-        if (controllerNameIPhone) controllerName = controllerNameIPhone;
-    }
-    
+    NSString *controllerName = [propertyDict TKObjectForKey:@"controller"];
     NSAssert([controllerName isKindOfClass:[NSString class]], @"The controller name should be a string");
     
     //Instantiate
-    NSString *nibName = [propertyDict objectForKey:@"nibName"];
-    NSBundle *nibBundle = [NSBundle bundleWithPath:[propertyDict objectForKey:@"nibBundle"]];
-    if (nibName) {        
+    NSString *nibName = [propertyDict TKObjectForKey:@"nibName"];
+    NSBundle *nibBundle = [NSBundle bundleWithPath:[propertyDict TKObjectForKey:@"nibBundle"]];
+    if (nibName) {
         controller = [[NSClassFromString(controllerName) alloc] initWithNibName:nibName bundle:nibBundle];
     }
     else {
@@ -77,15 +69,15 @@ injective_register_singleton(TKThemeManager)
     
     NSAssert(controller != nil, @"The controller named %@ can not be created", controllerName);
     NSAssert([controller isKindOfClass:[UIViewController class]], @"The controller %@ should be kind of UIViewController", controllerName);
-
+    
     //Properties
-    NSString *title = [propertyDict objectForKey:@"title"];
+    NSString *title = [propertyDict TKObjectForKey:@"title"];
     if (title) {
         controller.title = NSLocalizedString(title, nil);
-    }    
+    }
     
     //Subcontrollers
-    NSArray *subControllers = [propertyDict objectForKey:@"subControllers"];
+    NSArray *subControllers = [propertyDict TKObjectForKey:@"subControllers"];
     if (([controller respondsToSelector:@selector(setViewControllers:)]) && subControllers) {
         NSAssert([subControllers isKindOfClass:[NSArray class]], @"Subcontrollers should be an array");
         
@@ -98,12 +90,12 @@ injective_register_singleton(TKThemeManager)
         }
         [controller performSelector:@selector(setViewControllers:) withObject:vcs];
     }
-        
+    
     //Navigation bar
-    BOOL inNavigationController = [[propertyDict objectForKey:@"inNavigationController"] boolValue];
+    BOOL inNavigationController = [[propertyDict TKObjectForKey:@"inNavigationController"] boolValue];
     if (inNavigationController) {
         UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:controller];
-        int barStyle = [[propertyDict objectForKey:@"navBarStyle"] intValue];
+        int barStyle = [[propertyDict TKObjectForKey:@"navBarStyle"] intValue];
         nc.navigationBar.barStyle = barStyle;
         controller = nc;
     }
@@ -187,6 +179,31 @@ injective_register_singleton(TKThemeManager)
         CGFloat alpha = 1.0 * (hex & 0xFF) / 255.0;
         return UIColorFromRGBA(color, alpha);
     }
+}
+
+@end
+
+
+@implementation NSDictionary (TKThemed)
+
+- (id)TKObjectForKey:(id)aKey {
+    //Check the value for the specific device
+    NSString *keyPathDevice = [aKey stringByAppendingString:(IPAD? @"~iPad" : @"~iPhone")];
+    id deviceValue = [self objectForKey:keyPathDevice];
+    if (deviceValue) {
+        return deviceValue;
+    }
+    return [self objectForKey:aKey];
+}
+
+- (id)TKValueForKeyPath:(NSString *)keyPath {
+    //Check the value for the specific device
+    NSString *keyPathDevice = [keyPath stringByAppendingString:(IPAD? @"~iPad" : @"~iPhone")];
+    id deviceValue = [self valueForKeyPath:keyPathDevice];
+    if (deviceValue) {
+        return deviceValue;
+    }
+    return [self valueForKeyPath:keyPath];
 }
 
 @end
