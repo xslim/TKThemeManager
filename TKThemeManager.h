@@ -13,6 +13,7 @@
 #define themedRect(__path__) CGRectFromString(themedValue(__path__))
 #define themedPoint(__path__) CGPointFromString(themedValue(__path__))
 #define themedSize(__path__) CGSizeFromString(themedValue(__path__))
+#define themedInsets(__path__) UIEdgeInsetsFromString(themedValue(__path__))
 
 @interface TKThemeManager : NSObject
 
